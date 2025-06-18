@@ -36,6 +36,7 @@ export async function zohoCalendarApiRequest(
 ) {
 	const { oauthTokenData } = await this.getCredentials<ZohoCalendarOAuth2ApiCredentials>('zohoCalendarOAuth2Api');
 	const options: IRequestOptions = {
+		headers: {"user-agent": "n8n zohocalendar"},
 		body: {
 			data: [body],
 		},

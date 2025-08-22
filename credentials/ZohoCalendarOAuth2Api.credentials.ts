@@ -7,7 +7,7 @@ export class ZohoCalendarOAuth2Api implements ICredentialType {
 
 	displayName = 'Zoho Calendar OAuth2 API';
 
-	documentationUrl = 'zohocalendar';
+	documentationUrl = 'https://www.zoho.com/calendar/help/n8n-integration.html';
 
 	properties: INodeProperties[] = [
 		{

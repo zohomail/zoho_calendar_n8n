@@ -1,6 +1,6 @@
 {
   "name": "@zohomail/n8n-nodes-zohocalendar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is an n8n community node. It lets you use Zoho Calendar in your n8n workflows.",
   "main": "index.js",
   "n8n": {

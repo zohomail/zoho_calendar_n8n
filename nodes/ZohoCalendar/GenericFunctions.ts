@@ -5,7 +5,7 @@ import type {
 	ILoadOptionsFunctions,
 	JsonObject,
 	IHttpRequestMethods,
-	IRequestOptions,
+	IHttpRequestOptions,
 } from 'n8n-workflow';
 import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 
@@ -32,17 +32,17 @@ export async function zohoCalendarApiRequest(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
-	uri?: string,
+	url?: string,
 ) {
 	const { oauthTokenData } = await this.getCredentials<ZohoCalendarOAuth2ApiCredentials>('zohoCalendarOAuth2Api');
-	const options: IRequestOptions = {
+	const options: IHttpRequestOptions = {
 		headers: {"user-agent": "n8n zohocalendar"},
 		body: {
 			data: [body],
 		},
 		method,
 		qs,
-		uri: `https://calendar.${getDomain(oauthTokenData.api_domain)}/${endpoint}`,
+		url: `https://calendar.${getDomain(oauthTokenData.api_domain)}/${endpoint}`,
 		json: true,
 	};
 	if (!Object.keys(body).length) {
@@ -62,8 +62,8 @@ export async function zohoCalendarApiRequest(
 	} catch (error) {
 		error = error as JsonObject;
 		const args = error? {
-			message: error.error.error[0].message || 'The Zoho Calendar API returned an error.',
-			description: JSON.stringify(error.error.error[0].description),
+			message: error?.error?.error[0]?.message || 'The Zoho Calendar API returned an error.',
+			description: JSON.stringify(error?.error?.error[0]?.description),
 		}
 			: undefined;
 		throw new NodeApiError(this.getNode(), error as JsonObject, args);
@@ -164,13 +164,3 @@ export function getDomain(domain: string): string | undefined {
     }
     return undefined;
 }
-
-
-
-
-  
-
-
-
-
-

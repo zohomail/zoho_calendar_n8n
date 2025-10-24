@@ -98,15 +98,15 @@ export class ZohoCalendar implements INodeType {
 						// ----------------------------------------
 
 						// Get the necessary parameters
-						var start = datesplit(this.getNodeParameter('start', i));
-                        var end = datesplit(this.getNodeParameter('end', i));
+						let start = datesplit(this.getNodeParameter('start', i));
+                        let end = datesplit(this.getNodeParameter('end', i));
 						if(this.getNodeParameter('isallday', i) !== undefined && this.getNodeParameter('isallday', i) !== null && this.getNodeParameter('isallday', i) === true){
                             start = getDateAndTime(start);
 							end = getDateAndTime(end);
 						}
-                        var title = this.getNodeParameter('title', i);
+                        let title = this.getNodeParameter('title', i);
 
-                        var eventdata = `{"dateandtime": {"start": "${start}","end": "${end}"},"title": "${title}"`;
+                        let eventdata = `{"dateandtime": {"start": "${start}","end": "${end}"},"title": "${title}"`;
 
 						if (this.getNodeParameter('isallday', i) !== undefined && this.getNodeParameter('isallday', i) !== null) {
 							eventdata += `, "isallday": "${this.getNodeParameter('isallday', i)}"`;
@@ -140,7 +140,7 @@ export class ZohoCalendar implements INodeType {
 						// ----------------------------------------
 						//             event: delete
 						// ----------------------------------------
-                        var eventdata = `{"etag": "${await getEventDetails.call(this, this.getNodeParameter('calendar_id', i), this.getNodeParameter('event', i))}"}`;
+                        let eventdata = `{"etag": "${await getEventDetails.call(this, this.getNodeParameter('calendar_id', i), this.getNodeParameter('event', i))}"}`;
 						const qs: IDataObject = {eventdata};
 						responseData = await zohoCalendarApiRequest.call(this, 'DELETE', `api/v1/calendars/${this.getNodeParameter('calendar_id', i)}/events/${this.getNodeParameter('event', i)}`,{} ,qs);
 						responseData = responseData.events;
@@ -148,15 +148,15 @@ export class ZohoCalendar implements INodeType {
 						// ----------------------------------------
 						//             event: update
 						// ----------------------------------------
-						var start = datesplit(this.getNodeParameter('start', i));
-                        var end = datesplit(this.getNodeParameter('end', i));
+						let start = datesplit(this.getNodeParameter('start', i));
+                        let end = datesplit(this.getNodeParameter('end', i));
 						if(this.getNodeParameter('isallday', i) !== undefined && this.getNodeParameter('isallday', i) !== null && this.getNodeParameter('isallday', i) === true){
                             start = getDateAndTime(start);
 							end = getDateAndTime(end);
 						}
-                        var title = this.getNodeParameter('title', i);
+                        let title = this.getNodeParameter('title', i);
 
-                        var eventdata = `{"dateandtime": {"start": "${start}","end": "${end}"},"title": "${title}","etag": "${await getEventDetails.call(this, this.getNodeParameter('calendar_id', i), this.getNodeParameter('event', i))}"`;
+                        let eventdata = `{"dateandtime": {"start": "${start}","end": "${end}"},"title": "${title}","etag": "${await getEventDetails.call(this, this.getNodeParameter('calendar_id', i), this.getNodeParameter('event', i))}"`;
 
 						if (this.getNodeParameter('isallday', i) !== undefined && this.getNodeParameter('isallday', i) !== null) {
 							eventdata += `, "isallday": "${this.getNodeParameter('isallday', i)}"`;
@@ -197,19 +197,20 @@ export class ZohoCalendar implements INodeType {
 						responseData = responseData.events;
 					}
 				}
+				const executionData = this.helpers.constructExecutionMetaData(
+				    this.helpers.returnJsonArray(responseData as IDataObject),
+				    { itemData: { item: i } },
+				);
+			    returnData.push(...executionData);
 			}
 		    catch (error) {
 				if (this.continueOnFail()) {
-					returnData.push({ error: error.message, json: {} });
+					returnData.push({ json: {error: error.message },
+					pairedItem: { item: i } });
 					continue;
 				}
 				throw error;
 			}
-			const executionData = this.helpers.constructExecutionMetaData(
-				this.helpers.returnJsonArray(responseData as IDataObject),
-				{ itemData: { item: i } },
-			);
-			returnData.push(...executionData);
 		}
 		return [returnData];
 	}
